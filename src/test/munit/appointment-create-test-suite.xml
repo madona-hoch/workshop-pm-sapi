@@ -1,16 +1,39 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="   http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd   http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd   http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="   http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd   http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd   http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<munit:config name="appointment-create-test-suite.xml"/>
 	<munit:test description="Test" doc:description=" Purpose of this test suite:&#10;&#10;Challenge1-1:&#10;Happy Path:&#10;- Test creating an appointment when database creds are correct&#10;- Test creating an appointment when all required fields are present&#10;&#10;Sad Path:&#10;- Test creating an appointment when one of the required fields is missing&#10;- Test creating an appointment when more than one required fields is missing&#10;- Test creating an appointment when database creds are incorrect&#10;- Test creating an appointment when database server is down&#10;&#10;&#10;Challenge1-2:&#10;- My test would check if all required fields are passed&#10;- My test would check if the appointment has been created in the database&#10;- My test would check http status code and message in response" doc:id="1e07ccb8-5dd1-49b4-9a0c-484cb58e3ddd" name="ifClientHasAllRequiredFields-WeShouldReturn200SUCCESS-Test">
 		<munit:execution>
+			<ee:transform doc:name="Set Payload" doc:id="3d88b1cc-60da-4448-884f-fe5242a95766" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"patient": {
+		"id": 40600
+	},
+	"facility": {
+		"id": 40
+	},
+	"appointment": {
+		"start": "2024-02-12T11:00:00-05:00",
+		"description": "Review progress with knee condition after physical therapy, discuss weight goals"
+	}
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
 			<flow-ref doc:id="910d7307-b2e0-4876-9707-9dbda00f40be" doc:name="Flow-ref to createAppointment" name="createAppointment"/>
 		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="41a23fd9-e0b0-459a-9956-a30a88e9ece1" expected='40600' actual="#[payload.patient.id]" message="Oops, patient is is incorrect"/>
+		</munit:validation>
 	</munit:test>
-	<munit:test name="ifClientHasMissingRequiredFields-WeShouldReturn400FAILURETest2" doc:id="5e021917-c068-4c4b-a658-8033e6990cd9" doc:description=" Purpose of this test suite:&#10;&#10;Challenge1-1:&#10;Happy Path:&#10;- Test creating an appointment when database creds are correct&#10;- Test creating an appointment when all required fields are present&#10;&#10;Sad Path:&#10;- Test creating an appointment when one of the required fields is missing&#10;- Test creating an appointment when more than one required fields is missing&#10;- Test creating an appointment when database creds are incorrect&#10;- Test creating an appointment when database server is down&#10;&#10;&#10;Challenge1-2:&#10;- My test would check if all required fields are passed&#10;- My test would check if the appointment has been created in the database&#10;- My test would check http status code and message in response" description="Test" >
+	<munit:test name="ifClientHasMissingRequiredFields-WeShouldReturn400FAILURETest2" doc:id="5e021917-c068-4c4b-a658-8033e6990cd9" doc:description=" Purpose of this test suite:&#10;&#10;Challenge1-1:&#10;Happy Path:&#10;- Test creating an appointment when database creds are correct&#10;- Test creating an appointment when all required fields are present&#10;&#10;Sad Path:&#10;- Test creating an appointment when one of the required fields is missing&#10;- Test creating an appointment when more than one required fields is missing&#10;- Test creating an appointment when database creds are incorrect&#10;- Test creating an appointment when database server is down&#10;&#10;&#10;Challenge1-2:&#10;- My test would check if all required fields are passed&#10;- My test would check if the appointment has been created in the database&#10;- My test would check http status code and message in response" description="Test" ignore="true">
 		<munit:execution >
 			<flow-ref doc:name="Flow-ref to createAppointment" doc:id="f6299fb2-5f2a-4dde-a777-efb9e3edae7c" name="createAppointment" />
 		</munit:execution>
 	</munit:test>
-	<munit:test name="ifClientHasAllRequiredFieldsAndDatabaseIsDown-WeShouldReturn400FAILURE-Test3" doc:id="399778b3-2bff-4748-b9bf-747a8354c52d" doc:description=" Purpose of this test suite:&#10;&#10;Challenge1-1:&#10;Happy Path:&#10;- Test creating an appointment when database creds are correct&#10;- Test creating an appointment when all required fields are present&#10;&#10;Sad Path:&#10;- Test creating an appointment when one of the required fields is missing&#10;- Test creating an appointment when more than one required fields is missing&#10;- Test creating an appointment when database creds are incorrect&#10;- Test creating an appointment when database server is down&#10;&#10;&#10;Challenge1-2:&#10;- My test would check if all required fields are passed&#10;- My test would check if the appointment has been created in the database&#10;- My test would check http status code and message in response" description="Test" >
+	<munit:test name="ifClientHasAllRequiredFieldsAndDatabaseIsDown-WeShouldReturn400FAILURE-Test3" doc:id="399778b3-2bff-4748-b9bf-747a8354c52d" doc:description=" Purpose of this test suite:&#10;&#10;Challenge1-1:&#10;Happy Path:&#10;- Test creating an appointment when database creds are correct&#10;- Test creating an appointment when all required fields are present&#10;&#10;Sad Path:&#10;- Test creating an appointment when one of the required fields is missing&#10;- Test creating an appointment when more than one required fields is missing&#10;- Test creating an appointment when database creds are incorrect&#10;- Test creating an appointment when database server is down&#10;&#10;&#10;Challenge1-2:&#10;- My test would check if all required fields are passed&#10;- My test would check if the appointment has been created in the database&#10;- My test would check http status code and message in response" description="Test" ignore="true">
 		<munit:execution >
 			<flow-ref doc:name="Flow-ref to createAppointment" doc:id="6048f53e-58e4-4602-b307-c64b4ed26ac1" name="createAppointment" />
 		</munit:execution>
