@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="   http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd   http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd   http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<munit:config name="appointment-delete-test-suite.xml"/>
-	<munit:test name="ifClientHasValidAppointmentIdAndAppointmentIdExistsInTheDB-WeShouldReturn200SUCCESS-Test1" doc:id="daa95510-7e44-4bb7-9fe4-f525beb7b4af" doc:description=" Purpose of this test suite:&#10;&#10;Challenge1-1:&#10;Happy Path:&#10;- Test deleting an appointment when database creds are correct&#10;- Test deleting an appointment when appointment id is valid and exists in DB&#10;&#10;Sad Path:&#10;- Test deleting an appointment when one appointmentId is not valid&#10;- Test deleting an appointment when one appointmentId does not exist in the database&#10;- Test deleting an appointment when database creds are incorrect&#10;- Test deleting an appointment when database server is down&#10;&#10;&#10;&#10;Challenge1-2:&#10;- My test would check if the parameter (appointment Id) exists in the database&#10;- My test would check if the appointment has been soft-deleted from the database&#10;- My test would check http status code and message in response" description="Test" >
+	<munit:test name="ifClientHasValidAppointmentIdAndAppointmentIdExistsInTheDB-WeShouldReturn200SUCCESS-Test1" doc:id="daa95510-7e44-4bb7-9fe4-f525beb7b4af" doc:description=" Purpose of this test suite:&#10;&#10;Challenge1-1:&#10;Happy Path:&#10;- Test deleting an appointment when database creds are correct&#10;- Test deleting an appointment when appointment id is valid and exists in DB&#10;&#10;Sad Path:&#10;- Test deleting an appointment when one appointmentId is not valid&#10;- Test deleting an appointment when one appointmentId does not exist in the database&#10;- Test deleting an appointment when database creds are incorrect&#10;- Test deleting an appointment when database server is down&#10;&#10;&#10;&#10;Challenge1-2:&#10;- My test would check if the parameter (appointment Id) exists in the database&#10;- My test would check if the appointment has been soft-deleted from the database&#10;- My test would check http status code and message in response" description="Test" ignore="true">
 		<munit:execution >
 			<flow-ref doc:name="Flow-ref to deleteAppointment" doc:id="45567633-a354-4039-b5cf-bb2e11e4c739" name="deleteAppointment" />
 		</munit:execution>
@@ -12,7 +12,11 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			<flow-ref doc:id="d0ee7aaa-1240-478b-810a-2c661be11450" doc:name="Flow-ref to deleteAppointment" name="deleteAppointment" />
 		</munit:execution>
 		<munit:validation >
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="c40d0aa5-7fde-4665-8a9b-37613544ffb0" actual="payload" expected="0 is lower that 1"/>
+			<munit-tools:assert doc:name="payload must not be null and must equal to '0 is lower that 1'" doc:id="2b9b54e3-ab7a-4af5-a438-65d86c567ac1" >
+				<munit-tools:that ><![CDATA[#[import * from dw::test::Asserts 
+ ---
+payload must [notBeNull(), equalTo('0 is lower that 1')]]]]></munit-tools:that>
+			</munit-tools:assert>
 		</munit:validation>
 	</munit:test>
 
